@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-   <meta charset="UTF-8">
-   <title>Головна сторінка</title>
-</head>
-<body>
-   <h1>Ласкаво просимо на мій сайт</h1>
-   <p>Це перша HTML-сторінка у Django.</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+    <p>{{ description }}</p>
+
+    <h3>Вивчені теми:</h3>
+    <ul>
+        {% for topic in topics %}
+            <li>{{ topic }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+

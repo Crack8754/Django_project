@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Вхід{% endblock %}
+
+{% block content %}
+    <h2>Вхід</h2>
+
     <form method="post">
-    {% csrf_token %}
-    <input name="username">
-    <input name="password" type="password">
-    <button type="submit">Увійти</button>
-</form>
-</body>
-</html>
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Логін"><br>
+        <input type="password" name="password" placeholder="Пароль"><br>
+        <button type="submit">Увійти</button>
+
+{% endblock %}

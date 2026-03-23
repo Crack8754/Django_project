@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-   <meta charset="UTF-8">
-   <title>Про сайт</title>
-</head>
-<body>
-   <h1>Сторінка про сайт</h1>
-   <p>Тут буде інформація про мій проєкт.</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Про сайт{% endblock %}
+
+{% block content %}
+   <h2>{{ title }}</h2>
+   <p>{{ description }}</p>
+{% endblock %}
+
