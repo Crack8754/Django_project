@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .forms import ArticleForm
+from django.contrib.auth import logout
 
 @login_required
 def create_article(request):
@@ -45,6 +46,10 @@ def register(request):
 def articles(request):
     articles = Article.objects.all()
     return render(request, 'main/articles.html', {'articles': articles})
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
 
 def home(request):
    return render(request, 'main/home.html')

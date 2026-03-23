@@ -6,13 +6,17 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Articles</h1>
-    <ul>
-        {% for article in articles %}
-        <h3>{{ article.title }}</h3>
-        <p>{{ article.content }}</p>
-        <small>{{ article.author }}</small>
-        {% endfor %}
-    </ul>
+    <h1>Статті</h1>
+
+    <p>Ти увійшов як: {{ request.user }}</p>
+
+    <a href="{% url 'logout' %}">Вийти</a>
+
+    <hr>
+
+    {% for article in articles %}
+    <h3>{{ article.title }}</h3>
+    <p>{{ article.content }}</p>
+    {% endfor %}
 </body>
 </html>
