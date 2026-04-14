@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import ArticleForm
+from django.contrib.auth import logout
 
 
 @login_required
@@ -55,17 +56,23 @@ def articles(request):
     articles = Article.objects.all()
     return render(request, 'main/articles.html', {'articles': articles})
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1655be8aa5b52b89b6d538bf09a9f671c7212db1
 def user_logout(request):
     logout(request)
     return redirect('login')
 
+<<<<<<< HEAD
 
 @login_required
 def profile(request):
     return render(request, 'main/profile.html')
 
 
+=======
+>>>>>>> 1655be8aa5b52b89b6d538bf09a9f671c7212db1
 def home(request):
     context = {
         'title': 'Головна сторінка',
