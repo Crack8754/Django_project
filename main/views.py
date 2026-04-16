@@ -1,25 +1,26 @@
 from django.shortcuts import render, redirect
-from .models import Article
+from .models import Product
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import ArticleForm
+from .forms import ProductForm
 from django.contrib.auth import logout
 
 
 @login_required
-def create_article(request):
+def create_product(request):
     if request.method == 'POST':
-        form = ArticleForm(request.POST)
+        form = ProductForm(request.POST)
         if form.is_valid():
-            article = form.save(commit=False)
-            article.author = request.user
-            article.save()
-            return redirect('articles')
+            product = form.save(commit=False)
+            product.seller = request.user
+            product.save()
+            return redirect('products')
     else:
-        form = ArticleForm()
+        form = ProductForm()
 
     return render(request, 'main/create.html', {'form': form})
+
 
 
 def user_login(request):
@@ -31,7 +32,7 @@ def user_login(request):
         )
         if user:
             login(request, user)
-            return redirect('articles')
+            return redirect('products')
 
     return render(request, 'main/login.html')
 
@@ -52,27 +53,22 @@ def register(request):
     return render(request, 'main/register.html')
 
 
-def articles(request):
-    articles = Article.objects.all()
-    return render(request, 'main/articles.html', {'articles': articles})
+def products(request):
+    products = Product.objects.all()
+    return render(request, 'main/products.html', {'products': products})
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 1655be8aa5b52b89b6d538bf09a9f671c7212db1
+
 def user_logout(request):
     logout(request)
     return redirect('login')
 
-<<<<<<< HEAD
 
 @login_required
 def profile(request):
     return render(request, 'main/profile.html')
 
 
-=======
->>>>>>> 1655be8aa5b52b89b6d538bf09a9f671c7212db1
 def home(request):
     context = {
         'title': 'Головна сторінка',

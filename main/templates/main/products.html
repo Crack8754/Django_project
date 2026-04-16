@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Товари{% endblock %}
+
+{% block content %}
+<h2>LEGO Товари</h2>
+
+<a href="{% url 'create' %}">➕ Додати товар</a>
+<hr>
+
+{% for product in products %}
+    <h3>{{ product.name }}</h3>
+    <p>{{ product.description }}</p>
+    <p><strong>Ціна:</strong> {{ product.price }} грн</p>
+    <small>Продавець: {{ product.seller }}</small>
+    <hr>
+{% empty %}
+    <p>Поки що товарів немає</p>
+{% endfor %}
+{% endblock %}

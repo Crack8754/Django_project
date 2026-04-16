@@ -14,7 +14,7 @@
     <nav>
         <a href="{% url 'home' %}">Головна</a>
         <a href="{% url 'about' %}">Про сайт</a>
-        <a href="{% url 'articles' %}">Статті</a>
+        <a href="{% url 'products' %}">Товари</a>
 
         {% if user.is_authenticated %}
             <a href="{% url 'profile' %}">Профіль</a>
