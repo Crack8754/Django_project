@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import ProductForm
 from django.contrib.auth import logout
+from django.shortcuts import get_object_or_404
 
 
 @login_required
@@ -54,8 +55,15 @@ def register(request):
 
 
 def products(request):
-    products = Product.objects.all()
+    query = request.GET.get('q')
+
+    if query:
+        products = Product.objects.filter(name__icontains=query)
+    else:
+        products = Product.objects.all()
+
     return render(request, 'main/products.html', {'products': products})
+
 
 
 
@@ -84,3 +92,7 @@ def about(request):
         'description': 'Цей сайт створений у межах практичної роботи з Django.'
     }
     return render(request, 'main/about.html', context)
+
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, 'main/product_detail.html', {'product': product})

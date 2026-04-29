@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Головна{% endblock %}
+{% block title %}Набори LEGO{% endblock %}
 
 {% block content %}
-    <h2>{{ title }}</h2>
-    <p>{{ description }}</p>
 
-    <h3>Вивчені теми:</h3>
-    <ul>
-        {% for topic in topics %}
-            <li>{{ topic }}</li>
-        {% endfor %}
-    </ul>
+<div class="hero">
+    <div class="hero-content">
+        <img src="https://content1.rozetka.com.ua/goods/images/big/424936172.jpg" class="hero-img">
+
+        <div class="hero-text">
+            <p>Discover ships and heroes with LEGO Star Wars sets.</p>
+            <a href="{% url 'products' %}" class="btn">Дізнатися більше →</a>
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}
+
 
