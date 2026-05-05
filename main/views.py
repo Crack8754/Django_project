@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import ProductForm
 from django.contrib.auth import logout
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 
 @login_required
@@ -59,7 +60,13 @@ def products(request):
 
     search = request.GET.get('search')
     if search:
-        products = products.filter(name__icontains=search)
+        search_lower = search.lower()
+        ids = [p.id for p in products if search_lower in p.name.lower()]
+        products = products.filter(id__in=ids)
+    
+    category = request.GET.get('category')
+    if category:
+        products = products.filter(category=category)
 
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
@@ -107,3 +114,23 @@ def about(request):
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'main/product_detail.html', {'product': product})
+
+
+def search_autocomplete(request):
+    query = request.GET.get('q', '')
+    results = []
+    if len(query) >= 1:
+        all_products = Product.objects.all()
+        query_lower = query.lower()
+        matched_ids = [p.id for p in all_products if query_lower in p.name.lower()]
+        products = Product.objects.filter(id__in=matched_ids)[:8]
+        results = [
+            {
+                'id': p.id,
+                'name': p.name,
+                'price': str(p.price),
+                'category': p.get_category_display(),
+            }
+            for p in products
+        ]
+    return JsonResponse({'results': results})

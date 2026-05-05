@@ -3,7 +3,48 @@
 {% block title %}Про сайт{% endblock %}
 
 {% block content %}
-   <h2>{{ title }}</h2>
-   <p>{{ description }}</p>
+<div class="container mt-5">
+   <div class="row mb-5">
+      <div class="col-lg-8 mx-auto">
+         <h2 class="mb-4 text-center">{{ title }}</h2>
+      </div>
+   </div>
+
+   <div class="row">
+      <div class="col-md-4 mb-4">
+         <div class="card h-100 shadow-sm">
+            <div class="card-body">
+               <h5 class="card-title">🧱 Наша колекція</h5>
+               <p class="card-text">Ми пропонуємо найбільший вибір конструкторів LEGO для всіх віків з гарячих новинок до класичних наборів.</p>
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+         <div class="card h-100 shadow-sm">
+            <div class="card-body">
+               <h5 class="card-title">✨ Якість гарантована</h5>
+               <p class="card-text">Всі товари оригінальні і перевірені. Ми працюємо виключно з офіційними дистриб'юторами.</p>
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+         <div class="card h-100 shadow-sm">
+            <div class="card-body">
+               <h5 class="card-title">🚚 Швидка доставка</h5>
+               <p class="card-text">Замовлення обробляються протягом 24 годин. Доставка по всій країні за вигідними цінами.</p>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="row mt-5">
+      <div class="col-lg-8 mx-auto">
+         <h4 class="mb-3">Про нас</h4>
+         <p>Наш магазин LEGO працює з 2020 року і обслужив тисячі задоволених клієнтів. Ми любимо конструктори так само, як й наші покупці, і намагаємося забезпечити найкращий сервіс.</p>
+      </div>
+   </div>
+</div>
 {% endblock %}
 

@@ -3,14 +3,33 @@
 {% block title %}Профіль{% endblock %}
 
 {% block content %}
-<h2>Профіль користувача</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Профіль користувача</h2>
+                    
+                    <p class="card-text">
+                        <strong>Логін:</strong> 
+                        <span class="badge bg-primary">{{ request.user.username }}</span>
+                    </p>
 
-<p><strong>Логін:</strong> {{ request.user.username }}</p>
+                    {% if request.user.email %}
+                        <p class="card-text">
+                            <strong>Email:</strong> 
+                            <span class="text-muted">{{ request.user.email }}</span>
+                        </p>
+                    {% endif %}
 
-{% if request.user.email %}
-    <p><strong>Email:</strong> {{ request.user.email }}</p>
-{% endif %}
-
-<p>Ви успішно увійшли в систему.</p>
-<a href="{% url 'logout' %}">Вийти</a>
+                    <p class="card-text text-success mt-3">✓ Ви успішно увійшли в систему.</p>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <a href="{% url 'logout' %}" class="btn btn-danger">Вийти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

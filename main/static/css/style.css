@@ -217,3 +217,26 @@ header {
     background: #e6c200;
 }
 
+/* ===== SIDEBAR ===== */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sidebar-link {
+    display: block !important;
+    color: #000000 !important;
+    text-decoration: none !important;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom-color 0.3s;
+    font-size: 15px;
+}
+
+.sidebar-link:hover {
+    color: #000000 !important;
+    text-decoration: none !important;
+    border-bottom-color: #000000;
+}
