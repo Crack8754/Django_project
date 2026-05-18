@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Реєстрація{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow-lg" style="width: 100%; max-width: 400px;">
+        <div class="card-body p-5">
+            <h2 class="text-center mb-4">Реєстрація</h2>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="Логін" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Зареєструватися</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

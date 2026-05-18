@@ -1,0 +1,31 @@
+# Секрети — найважливіше!
+.env
+
+# Віртуальне середовище
+venv/
+env/
+.venv/
+
+# Python кеш
+__pycache__/
+*.py[cod]
+*.pyo
+
+# База даних (SQLite)
+db.sqlite3
+
+# Медіафайли користувачів (завантажені через сайт)
+media/
+
+# Статика зібрана для продакшну
+staticfiles/
+static_root/
+
+# IDE файли
+.vscode/
+.idea/
+*.swp
+
+# OS файли
+.DS_Store
+Thumbs.db
