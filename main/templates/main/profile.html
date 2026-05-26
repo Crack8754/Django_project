@@ -5,30 +5,71 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg">
+        <div class="col-md-8">
+
+            <!-- Інформація про користувача -->
+            <div class="card shadow-lg mb-4">
                 <div class="card-body">
                     <h2 class="card-title text-center mb-4">Профіль користувача</h2>
-                    
+
                     <p class="card-text">
-                        <strong>Логін:</strong> 
+                        <strong>Логін:</strong>
                         <span class="badge bg-primary">{{ request.user.username }}</span>
                     </p>
 
                     {% if request.user.email %}
                         <p class="card-text">
-                            <strong>Email:</strong> 
+                            <strong>Email:</strong>
                             <span class="text-muted">{{ request.user.email }}</span>
                         </p>
                     {% endif %}
 
                     <p class="card-text text-success mt-3">✓ Ви успішно увійшли в систему.</p>
-                    
+
                     <div class="d-grid gap-2 mt-4">
-                        <a href="{% url 'logout' %}" class="btn btn-danger">Вийти</a>
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger w-100">Вийти</button>
+                        </form>
                     </div>
                 </div>
             </div>
+
+            <!-- Список улюблених товарів -->
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">♥ Улюблені товари</h4>
+
+                    {% if favorites %}
+                        <div class="row g-3">
+                            {% for fav in favorites %}
+                            <div class="col-md-6">
+                                <div class="card border h-100">
+                                    {% if fav.product.image %}
+                                        <img src="{{ fav.product.image.url }}"
+                                             class="card-img-top"
+                                             style="height:150px; object-fit:cover;">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ fav.product.name }}</h6>
+                                        <p class="text-muted small mb-1">{{ fav.product.get_category_display }}</p>
+                                        <p class="fw-bold mb-2">{{ fav.product.price }} грн</p>
+                                        <a href="{% url 'product_detail' fav.product.pk %}"
+                                           class="btn btn-outline-primary btn-sm w-100">
+                                            Переглянути →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Ви ще не додали жодного товару до улюблених.</p>
+                    {% endif %}
+
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

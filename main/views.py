@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import Product
+from .models import Product, Rating, Favorite
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import ProductForm
-from django.contrib.auth import logout
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from django.db.models import Avg
 
 
 @login_required
@@ -22,7 +22,6 @@ def create_product(request):
         form = ProductForm()
 
     return render(request, 'main/create.html', {'form': form})
-
 
 
 def user_login(request):
@@ -56,12 +55,12 @@ def register(request):
 
 
 def products(request):
-    products = Product.objects.all()
+    products = Product.objects.annotate(avg_rating=Avg('ratings__score')).order_by('-avg_rating', '-created_at')
 
     search = request.GET.get('search')
     if search:
         products = products.filter(name__icontains=search)
-    
+
     category = request.GET.get('category')
     if category:
         products = products.filter(category=category)
@@ -80,9 +79,6 @@ def products(request):
     })
 
 
-
-
-
 def user_logout(request):
     if request.method == 'POST':
         logout(request)
@@ -91,7 +87,8 @@ def user_logout(request):
 
 @login_required
 def profile(request):
-    return render(request, 'main/profile.html')
+    favorites = Favorite.objects.filter(user=request.user).select_related('product')
+    return render(request, 'main/profile.html', {'favorites': favorites})
 
 
 def home(request):
@@ -110,9 +107,50 @@ def about(request):
     }
     return render(request, 'main/about.html', context)
 
+
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    return render(request, 'main/product_detail.html', {'product': product})
+    avg_rating = product.ratings.aggregate(avg=Avg('score'))['avg']
+
+    user_rating = None
+    is_favorite = False
+
+    if request.user.is_authenticated:
+        rating_obj = product.ratings.filter(user=request.user).first()
+        if rating_obj:
+            user_rating = rating_obj.score
+        is_favorite = Favorite.objects.filter(product=product, user=request.user).exists()
+
+    return render(request, 'main/product_detail.html', {
+        'product': product,
+        'avg_rating': avg_rating,
+        'user_rating': user_rating,
+        'is_favorite': is_favorite,
+    })
+
+
+@login_required
+def rate_product(request, pk):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, pk=pk)
+        score = int(request.POST.get('score', 0))
+        if 1 <= score <= 5:
+            Rating.objects.update_or_create(
+                product=product,
+                user=request.user,
+                defaults={'score': score}
+            )
+    return redirect('product_detail', pk=pk)
+
+
+@login_required
+def toggle_favorite(request, pk):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, pk=pk)
+        fav, created = Favorite.objects.get_or_create(product=product, user=request.user)
+        if not created:
+            fav.delete()
+    return redirect('product_detail', pk=pk)
 
 
 def search_autocomplete(request):

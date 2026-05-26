@@ -11,5 +11,7 @@ urlpatterns = [
     path('create/', views.create_product, name='create'),
     path('profile/', views.profile, name='profile'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
+    path('product/<int:pk>/rate/', views.rate_product, name='rate_product'),
+    path('product/<int:pk>/favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('search-autocomplete/', views.search_autocomplete, name='search_autocomplete'),
 ]

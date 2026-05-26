@@ -68,9 +68,27 @@
                                 {{ product.get_category_display }}
                             </p>
 
+                            <!-- Рейтинг зірочками -->
+                            <p class="mb-1">
+                                {% if product.avg_rating %}
+                                    {% with product.avg_rating|floatformat:0 as stars %}
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= stars|add:0 %}
+                                                <span style="color:#FFD700; font-size:1.1rem;">★</span>
+                                            {% else %}
+                                                <span style="color:#ccc; font-size:1.1rem;">★</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endwith %}
+                                    <small class="text-muted ms-1">{{ product.avg_rating|floatformat:1 }}</small>
+                                {% else %}
+                                    <small class="text-muted">Немає оцінок</small>
+                                {% endif %}
+                            </p>
+
                             <p class="fw-bold">{{ product.price }} грн</p>
 
-                            <a href="{% url 'product_detail' product.id %}" 
+                            <a href="{% url 'product_detail' product.id %}"
                                class="btn btn-outline-primary mt-auto">
                                 Дізнатися більше →
                             </a>

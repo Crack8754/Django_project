@@ -20,9 +20,79 @@
 
         <p class="price">{{ product.price }} грн</p>
 
+        <!-- Середня оцінка -->
+        <div class="mb-3">
+            {% if avg_rating %}
+                <span style="font-size:1.3rem;">
+                    {% with avg_rating|floatformat:0 as stars %}
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= stars|add:0 %}
+                                <span style="color:#FFD700;">★</span>
+                            {% else %}
+                                <span style="color:#ccc;">★</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </span>
+                <span class="text-muted ms-1">{{ avg_rating|floatformat:1 }} / 5</span>
+            {% else %}
+                <span class="text-muted">Ще немає оцінок</span>
+            {% endif %}
+        </div>
+
         <p class="desc">{{ product.description }}</p>
 
         <button class="buy-big">Купити</button>
+
+        {% if user.is_authenticated %}
+
+            <!-- Кнопка улюбленого -->
+            <form method="POST" action="{% url 'toggle_favorite' product.pk %}" class="mt-3">
+                {% csrf_token %}
+                {% if is_favorite %}
+                    <button type="submit" class="btn btn-danger">
+                        ♥ Видалити з улюблених
+                    </button>
+                {% else %}
+                    <button type="submit" class="btn btn-outline-danger">
+                        ♡ Додати до улюблених
+                    </button>
+                {% endif %}
+            </form>
+
+            <!-- Форма оцінки зірочками -->
+            <div class="mt-4">
+                <h5>Ваша оцінка:</h5>
+                <form method="POST" action="{% url 'rate_product' product.pk %}">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2 align-items-center mb-2">
+                        {% for i in "12345" %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="score"
+                                   id="star{{ i }}" value="{{ i }}"
+                                   {% if user_rating == forloop.counter %}checked{% endif %}>
+                            <label class="form-check-label" for="star{{ i }}"
+                                   style="font-size:1.4rem; color:#FFD700; cursor:pointer;">
+                                {{ i }}★
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Зберегти оцінку
+                    </button>
+                </form>
+                {% if user_rating %}
+                    <p class="text-muted small mt-1">Ваша поточна оцінка: {{ user_rating }}★</p>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <p class="text-muted mt-3">
+                <a href="{% url 'login' %}">Увійдіть</a>, щоб оцінити товар або додати до улюблених.
+            </p>
+        {% endif %}
+
     </div>
 
 </div>

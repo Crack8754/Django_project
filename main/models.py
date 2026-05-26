@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Product(models.Model):
 
     CATEGORY_CHOICES = [
@@ -23,10 +24,32 @@ class Product(models.Model):
         return self.name
 
 
-        
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
+
+
+class Rating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    score = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+
+    class Meta:
+        unique_together = ('product', 'user')
+
+    def __str__(self):
+        return f"{self.user} → {self.product}: {self.score}★"
+
+
+class Favorite(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='favorited_by')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('product', 'user')
+
+    def __str__(self):
+        return f"{self.user} ♥ {self.product}"
 
 
 
