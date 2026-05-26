@@ -68,7 +68,6 @@
                                 {{ product.get_category_display }}
                             </p>
 
-                            <!-- Рейтинг зірочками -->
                             <p class="mb-1">
                                 {% if product.avg_rating %}
                                     {% with product.avg_rating|floatformat:0 as stars %}
