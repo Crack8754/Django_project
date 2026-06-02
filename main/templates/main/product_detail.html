@@ -20,9 +20,10 @@
 
         <p class="price">{{ product.price }} грн</p>
 
-        <div class="mb-3">
+        <!-- Середня оцінка (оновлюється через WebSocket) -->
+        <div class="mb-3" id="rating-block">
             {% if avg_rating %}
-                <span style="font-size:1.3rem;">
+                <span id="stars-display" style="font-size:1.3rem;">
                     {% with avg_rating|floatformat:0 as stars %}
                         {% for i in "12345" %}
                             {% if forloop.counter <= stars|add:0 %}
@@ -33,9 +34,10 @@
                         {% endfor %}
                     {% endwith %}
                 </span>
-                <span class="text-muted ms-1">{{ avg_rating|floatformat:1 }} / 5</span>
+                <span id="avg-rating-value" class="text-muted ms-1">{{ avg_rating|floatformat:1 }} / 5</span>
             {% else %}
-                <span class="text-muted">Ще немає оцінок</span>
+                <span id="stars-display" style="font-size:1.3rem; color:#ccc;">★★★★★</span>
+                <span id="avg-rating-value" class="text-muted ms-1">Ще немає оцінок</span>
             {% endif %}
         </div>
 
@@ -57,6 +59,11 @@
                     </button>
                 {% endif %}
             </form>
+
+            <!-- Лічильник улюблених (оновлюється через WebSocket) -->
+            <p class="text-muted small mt-1">
+                ♥ <span id="favorites-count">{{ product.favorited_by.count }}</span> у списку улюблених
+            </p>
 
             <div class="mt-4">
                 <h5>Ваша оцінка:</h5>
@@ -93,5 +100,36 @@
     </div>
 
 </div>
+
+<script>
+    const productId = {{ product.pk }};
+    const wsUrl = `ws://${window.location.host}/ws/product/${productId}/`;
+    const socket = new WebSocket(wsUrl);
+
+    socket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+
+        if (data.favorites_count !== undefined) {
+            document.getElementById('favorites-count').textContent = data.favorites_count;
+        }
+
+        if (data.avg_rating !== null && data.avg_rating !== undefined) {
+            document.getElementById('avg-rating-value').textContent = data.avg_rating + ' / 5';
+            const fullStars = Math.round(data.avg_rating);
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                starsHtml += `<span style="color:${i <= fullStars ? '#FFD700' : '#ccc'};">★</span>`;
+            }
+            document.getElementById('stars-display').innerHTML = starsHtml;
+        } else if (data.avg_rating === null) {
+            document.getElementById('avg-rating-value').textContent = 'Ще немає оцінок';
+            document.getElementById('stars-display').innerHTML = '<span style="color:#ccc;">★★★★★</span>';
+        }
+    };
+
+    socket.onclose = function() {
+        console.log('WebSocket відключено');
+    };
+</script>
 
 {% endblock %}

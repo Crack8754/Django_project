@@ -68,20 +68,24 @@
                                 {{ product.get_category_display }}
                             </p>
 
-                            <p class="mb-1">
+                            <!-- Рейтинг — id для WebSocket оновлення -->
+                            <p class="mb-1" id="rating-block-{{ product.id }}">
                                 {% if product.avg_rating %}
-                                    {% with product.avg_rating|floatformat:0 as stars %}
-                                        {% for i in "12345" %}
-                                            {% if forloop.counter <= stars|add:0 %}
-                                                <span style="color:#FFD700; font-size:1.1rem;">★</span>
-                                            {% else %}
-                                                <span style="color:#ccc; font-size:1.1rem;">★</span>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endwith %}
-                                    <small class="text-muted ms-1">{{ product.avg_rating|floatformat:1 }}</small>
+                                    <span id="stars-{{ product.id }}" style="font-size:1.1rem;">
+                                        {% with product.avg_rating|floatformat:0 as stars %}
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= stars|add:0 %}
+                                                    <span style="color:#FFD700;">★</span>
+                                                {% else %}
+                                                    <span style="color:#ccc;">★</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </span>
+                                    <small id="avg-{{ product.id }}" class="text-muted ms-1">{{ product.avg_rating|floatformat:1 }}</small>
                                 {% else %}
-                                    <small class="text-muted">Немає оцінок</small>
+                                    <span id="stars-{{ product.id }}" style="font-size:1.1rem; color:#ccc;">★★★★★</span>
+                                    <small id="avg-{{ product.id }}" class="text-muted ms-1">Немає оцінок</small>
                                 {% endif %}
                             </p>
 
@@ -106,5 +110,39 @@
     </div>
 
 </div>
+
+<!-- WebSocket для оновлення рейтингів в каталозі -->
+<script>
+    const wsUrl = `ws://${window.location.host}/ws/products/`;
+    const socket = new WebSocket(wsUrl);
+
+    socket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const id = data.product_id;
+        const avgRating = data.avg_rating;
+
+        const starsEl = document.getElementById(`stars-${id}`);
+        const avgEl = document.getElementById(`avg-${id}`);
+
+        if (!starsEl || !avgEl) return;
+
+        if (avgRating !== null && avgRating !== undefined) {
+            const fullStars = Math.round(avgRating);
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                starsHtml += `<span style="color:${i <= fullStars ? '#FFD700' : '#ccc'};">★</span>`;
+            }
+            starsEl.innerHTML = starsHtml;
+            avgEl.textContent = avgRating.toFixed(1);
+        } else {
+            starsEl.innerHTML = '<span style="color:#ccc;">★★★★★</span>';
+            avgEl.textContent = 'Немає оцінок';
+        }
+    };
+
+    socket.onclose = function() {
+        console.log('WebSocket каталогу відключено');
+    };
+</script>
 
 {% endblock %}
